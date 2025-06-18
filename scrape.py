@@ -1,7 +1,5 @@
 import bs4
 import requests
-from datetime import datetime,timedelta
-from pytz import timezone
 from imd_native_api import native_json
 
 
@@ -11,18 +9,6 @@ def get_weather_info(city):
     soup = bs4.BeautifulSoup(response.text,'html.parser')
 
     tags = soup.find_all("a")
-    seven_days = [
-        datetime.now(timezone("Asia/Kolkata")).date(),
-        datetime.now(timezone("Asia/Kolkata")).date() - timedelta(days=1),
-        datetime.now(timezone("Asia/Kolkata")).date() - timedelta(days=2),
-        datetime.now(timezone("Asia/Kolkata")).date() - timedelta(days=3),
-        datetime.now(timezone("Asia/Kolkata")).date() - timedelta(days=4),
-        datetime.now(timezone("Asia/Kolkata")).date() - timedelta(days=5),
-        datetime.now(timezone("Asia/Kolkata")).date() - timedelta(days=6),
-    ]
-
-    a = []
-
 
     for i in range(len(tags)):
         if city in tags[i]:
@@ -37,7 +23,6 @@ def get_weather_info(city):
 
             buffer_seven_day_data = table_tags[2].find_all("tr")
 
-
             seven_day_data = [
                 buffer_seven_day_data[1].find_all("td"),
                 buffer_seven_day_data[2].find_all("td"),
@@ -46,11 +31,11 @@ def get_weather_info(city):
                 buffer_seven_day_data[5].find_all("td"),
                 buffer_seven_day_data[6].find_all("td"),
                 buffer_seven_day_data[7].find_all("td"),
+                buffer_seven_day_data[8].find_all("td"),
             ]
 
-            imd_native_int = int(tags[i].get("href").split("=")[1])
-
-            imd_api_res = native_json(imd_native_int)
+            imd_station_id = int(tags[i].get("href").split("=")[1])
+            imd_api_res = native_json(imd_station_id)
 
 
             print("got the the data needed!🤞")
@@ -87,8 +72,9 @@ def get_weather_info(city):
                         .replace("\t", "")
                         .replace("\r", ""),
                     "rainfall": float(imd_api_res[0]["rainfall"]) * (10 ** -2),
-                    "rh0830": imd_api_res[0]["rh0830"] + " %" if imd_api_res[0]["rh0830"] is not None else "--",
-                    "rh1730": imd_api_res[0]["rh1730"] + " %" if imd_api_res[0]["rh1730"] is not None else "--",
+                    "rh0830": imd_api_res[0]["rh0830"] + "%" if imd_api_res[0]["rh0830"] is not None else "--",
+                    "rh1730": imd_api_res[0]["rh1730"] + "%" if imd_api_res[0]["rh1730"] is not None else "--",
+                    "rh0000": f"{imd_api_res[0]["rh0830"] + "%" if imd_api_res[0]["rh0830"] is not None else "--"} | {imd_api_res[0]["rh1730"] + "%" if imd_api_res[0]["rh1730"] is not None else "--"}"
                 },
 
                 "six_day" : {
@@ -262,6 +248,33 @@ def get_weather_info(city):
                         .replace("\t", "")
                         .replace("\r", ""),
 
+                    },
+                    "day_7": {
+                        "day": seven_day_data[7][0].text
+                        .replace("\n", "")
+                        .replace("\t", "")
+                        .replace("\r", ""),
+                        "min_temp":
+                            seven_day_data[7][1].text
+                            .replace("\n", "")
+                            .replace("\t", "")
+                            .replace("\r", "")
+                        ,
+                        "max_temp":
+                            seven_day_data[7][2].text
+                            .replace("\n", "")
+                            .replace("\t", "")
+                            .replace("\r", "")
+                        ,
+                        "forecast": seven_day_data[7][4].text
+                        .replace("\n", "")
+                        .replace("\t", "")
+                        .replace("\r", ""),
+
+                        "warnings": seven_day_data[7][6].text
+                        .replace("\n", "")
+                        .replace("\t", "")
+                        .replace("\r", ""),
                     },
                 }
             }
