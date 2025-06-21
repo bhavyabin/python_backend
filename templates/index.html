@@ -101,12 +101,12 @@
       city = document.getElementById("cityinput").value
     ){
 
-      fetch("./api", {
+      fetch("./api/name", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json' // Or other content type
         },
-        body: JSON.stringify({"city": city}) // Data to send, often as a JSON string
+        body: JSON.stringify({"station": city}) // Data to send, often as a JSON string
       })
         .then(response => {
           if (!response.ok) {
