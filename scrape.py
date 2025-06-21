@@ -78,7 +78,7 @@ def get_weather_info_using_station_id(station_id):
             "rainfall": float(imd_api_res[0]["rainfall"]) * (10 ** -2),
             "rh0830": imd_api_res[0]["rh0830"] + "%" if imd_api_res[0]["rh0830"] is not None else "--",
             "rh1730": imd_api_res[0]["rh1730"] + "%" if imd_api_res[0]["rh1730"] is not None else "--",
-            "rh0000": f"{imd_api_res[0]["rh0830"] + "%" if imd_api_res[0]["rh0830"] is not None else "--"} | {imd_api_res[0]["rh1730"] + "%" if imd_api_res[0]["rh1730"] is not None else "--"}"
+            "rh0000": (imd_api_res[0]["rh0830"] + "%" if imd_api_res[0]["rh0830"] is not None else "--") + " | " + (imd_api_res[0]["rh1730"] + "%" if imd_api_res[0]["rh1730"] is not None else "--")
         },
 
         "six_day": {
