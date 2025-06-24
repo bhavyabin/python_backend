@@ -26,6 +26,8 @@ def get_weather_info_using_station_id(station_id):
 
     buffer_seven_day_data = table_tags[2].find_all("tr")
 
+    print(len(buffer_seven_day_data))
+
     seven_day_data = [
         buffer_seven_day_data[1].find_all("td"),
         buffer_seven_day_data[2].find_all("td"),
@@ -34,8 +36,9 @@ def get_weather_info_using_station_id(station_id):
         buffer_seven_day_data[5].find_all("td"),
         buffer_seven_day_data[6].find_all("td"),
         buffer_seven_day_data[7].find_all("td"),
-        buffer_seven_day_data[8].find_all("td"),
     ]
+
+
 
     file = open("station_ids_rev.json", "r")
     city = json.load(file)[str(station_id)]
@@ -75,7 +78,7 @@ def get_weather_info_using_station_id(station_id):
             .replace("\n", "")
             .replace("\t", "")
             .replace("\r", ""),
-            "rainfall": float(imd_api_res[0]["rainfall"]) * (10 ** -2),
+            "rainfall": float(imd_api_res[0]["rainfall"]) * (10 ** -2) if imd_api_res[0]["rainfall"] is not None else "--",
             "rh0830": imd_api_res[0]["rh0830"] + "%" if imd_api_res[0]["rh0830"] is not None else "--",
             "rh1730": imd_api_res[0]["rh1730"] + "%" if imd_api_res[0]["rh1730"] is not None else "--",
             "rh0000": (imd_api_res[0]["rh0830"] + "%" if imd_api_res[0]["rh0830"] is not None else "--") + " | " + (imd_api_res[0]["rh1730"] + "%" if imd_api_res[0]["rh1730"] is not None else "--")
@@ -248,34 +251,6 @@ def get_weather_info_using_station_id(station_id):
                 .replace("\r", ""),
 
                 "warnings": seven_day_data[6][6].text
-                .replace("\n", "")
-                .replace("\t", "")
-                .replace("\r", ""),
-
-            },
-            "day_7": {
-                "day": seven_day_data[7][0].text
-                .replace("\n", "")
-                .replace("\t", "")
-                .replace("\r", ""),
-                "min_temp":
-                    seven_day_data[7][1].text
-                    .replace("\n", "")
-                    .replace("\t", "")
-                    .replace("\r", "")
-                ,
-                "max_temp":
-                    seven_day_data[7][2].text
-                    .replace("\n", "")
-                    .replace("\t", "")
-                    .replace("\r", "")
-                ,
-                "forecast": seven_day_data[7][4].text
-                .replace("\n", "")
-                .replace("\t", "")
-                .replace("\r", ""),
-
-                "warnings": seven_day_data[7][6].text
                 .replace("\n", "")
                 .replace("\t", "")
                 .replace("\r", ""),

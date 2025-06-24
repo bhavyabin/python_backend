@@ -1,8 +1,10 @@
 import requests
 
-url = 'http://3.89.121.108:8000'
-body = {'city': 'Faridabad'}
+url = 'https://in.docs.wps.com/module/common/preview/?sid=sIKH83rZR8b6hwQY/l/sIKH83rZR8b6hwQY?readonly&amp;disablePlugins'
+headers = {
+    "access-control-allow-origin": "https://in.docs.wps.com"
+}
 
-x = requests.post(url, json=body)
+x = requests.get(url)
 
-print(x)
+print(x.text)
